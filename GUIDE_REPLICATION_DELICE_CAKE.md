@@ -18,7 +18,7 @@ Le site utilise Firebase pour stocker les produits, les commandes et les connais
 Utilisé par le chatbot pour générer des réponses intelligentes.
 - **Provider** : Hugging Face Inference API.
 - **Modèle utilisé** : `meta-llama/Meta-Llama-3-8B-Instruct`.
-- **Clé API** : À configurer dans `firebase-config.js` (variable `HF_API_KEY`).
+- **Clé API** : NE PAS mettre dans le code. À configurer uniquement dans les **Secrets Cloudflare** (variable `HF_API_KEY`).
 
 ### C. Cloudinary (Hébergement Images)
 Remplace Firebase Storage pour une gestion plus fluide des médias et une optimisation automatique.
@@ -80,6 +80,23 @@ Pour éviter les envois manuels et rendre le site vraiment "dynamique" :
     - Sélectionnez votre dépôt `delice-cake`.
     - **Configuration** : Build command (vide), Output directory : `.` (le point).
 4.  **Résultat** : Pour chaque mise à jour, il vous suffira de glisser les fichiers modifiés sur GitHub. Cloudflare s'occupe du reste !
+
+## Configuration Cloudflare Workers & IA
+
+Le site est désormais **entièrement sécurisé**. Aucune clé n'est visible dans le code source.
+
+### 1. Sécurité (Secrets)
+Vous devez configurer 3 secrets dans votre tableau de bord Cloudflare (**Settings > Variables > Production**) :
+
+1.  **`HF_API_KEY`** : Votre clé Hugging Face.
+2.  **`TELEGRAM_BOT_TOKEN`** : Le jeton de votre bot Telegram (ex: `123456:ABC...`).
+3.  **`TELEGRAM_CHAT_IDS`** : Les IDs des admins, séparés par une virgule (ex: `7687122420,1870863898`).
+
+### 2. Procédure de mise à jour
+1.  Enregistrez vos modifications sur votre ordinateur.
+2.  Allez sur GitHub et glissez les fichiers modifiés.
+3.  Cloudflare déploie automatiquement.
+4.  **Note** : Si vous changez une clé, n'oubliez pas de mettre à jour le secret dans Cloudflare et de relancer un déploiement.
 
 ---
 *Dernière mise à jour : 3 Mars 2026*

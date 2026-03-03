@@ -55,7 +55,7 @@ const DEFAULT_SITE_SETTINGS = {
     saveursDesc: "Un extérieur doré et moelleux, un intérieur généreux en chocolat fondant.",
     whatsappNum: "22656808872",
     ctaText: "Commander",
-    telegramChatIds: ["7687122420", "1870863898"] // Fallback direct
+    telegramChatIds: [] // Gardez ceci vide, utilisez les Secrets Cloudflare pour la sécurité
 };
 
 // Service de données abstrait (permet de basculer entre Firebase et Local Storage/Mock)

@@ -1,36 +1,15 @@
-const TELEGRAM_CONFIG = {
-  botToken: '8777383574:AAGSv_q4vB1d_JEwz65Zf8EHVUL2qktCLus',
-  chatIds: ['7687122420', '1870863898']
-};
+// TELEGRAM Notification via Worker Proxy (Sécurisé)
 
 async function sendTelegramNotification(message) {
-  console.log("Sending Telegram notifications...");
-  const ids = (TELEGRAM_CONFIG.chatIds && TELEGRAM_CONFIG.chatIds.length > 0)
-    ? TELEGRAM_CONFIG.chatIds
-    : ['7687122420', '1870863898']; // Fallback pour les deux admins
-
-  const sendPromises = ids.map(async (id) => {
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: id,
-          text: message,
-          parse_mode: 'HTML'
-        })
-      });
-      const data = await response.json();
-      if (!data.ok) {
-        console.error(`Telegram API Error (ID: ${id}):`, data);
-      }
-    } catch (e) {
-      console.error(`Telegram error for ID ${id}`, e);
-    }
-  });
-
-  await Promise.all(sendPromises);
+  try {
+    await fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+  } catch (e) {
+    console.error("Telegram notification error", e);
+  }
 }
 
 // === PRELOADER ===
