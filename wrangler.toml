@@ -1,0 +1,13 @@
+name = "delice-cake"
+pages_build_output_dir = "."
+
+[vars]
+# Ne pas mettre la clé API ici, utilisez le tableau de bord Cloudflare (Secrets)
+# HF_API_KEY = "..."
+
+[dev]
+port = 8080
+
+[[routes]]
+pattern = "bf.delice-cake.workers.dev"
+custom_domain = true
