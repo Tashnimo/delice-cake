@@ -1,0 +1,16 @@
+{
+    "name": "delice-cake",
+    "version": "1.0.0",
+    "description": "Délice Cake Site",
+    "main": "index.html",
+    "scripts": {
+        "start": "serve ."
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "serve": "^14.2.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

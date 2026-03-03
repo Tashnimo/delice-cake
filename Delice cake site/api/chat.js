@@ -1,18 +1,21 @@
 export default async function handler(req, res) {
+    // 1. Gestion des requêtes OPTIONS (CORS)
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
     if (req.method === 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         return res.status(200).end();
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
+        return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
     const HF_API_KEY = process.env.HF_API_KEY;
     if (!HF_API_KEY) {
-        return res.status(500).json({ error: 'HF_API_KEY missing' });
+        console.error("ERREUR : HF_API_KEY manquante.");
+        return res.status(500).json({ error: "Configuration manquante (API KEY)" });
     }
 
     const HF_API_URL = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
@@ -32,11 +35,9 @@ export default async function handler(req, res) {
         }
 
         const data = await response.json();
-
-        // Add CORS to standard response
-        res.setHeader('Access-Control-Allow-Origin', '*');
         return res.status(response.status).json(data);
     } catch (err) {
-        return res.status(500).json({ error: err.message });
+        console.error("Erreur API Chat :", err.message);
+        return res.status(500).json({ error: "Erreur de connexion", detail: err.message });
     }
 }

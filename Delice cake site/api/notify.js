@@ -1,27 +1,29 @@
 export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
     if (req.method === 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         return res.status(200).end();
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
+        return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatIdsRaw = process.env.TELEGRAM_CHAT_IDS;
 
     if (!botToken || !chatIdsRaw) {
-        return res.status(500).json({ error: "Telegram config missing" });
+        console.error("ERREUR : Configuration Telegram manquante.");
+        return res.status(500).json({ error: "Configuration Telegram incomplète" });
     }
 
     try {
         const { message } = req.body;
         const ids = chatIdsRaw.split(",").map(id => id.trim());
 
-        const results = await Promise.all(ids.map(id =>
+        await Promise.all(ids.map(id =>
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -29,9 +31,9 @@ export default async function handler(req, res) {
             })
         ));
 
-        res.setHeader('Access-Control-Allow-Origin', '*');
         return res.status(200).json({ success: true });
     } catch (err) {
+        console.error("Erreur notification Telegram :", err.message);
         return res.status(500).json({ error: err.message });
     }
 }
