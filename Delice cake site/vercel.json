@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/api/chat",
+            "destination": "/api/chat.js"
+        },
+        {
+            "source": "/api/notify",
+            "destination": "/api/notify.js"
+        }
+    ],
+    "cleanUrls": true
+}
