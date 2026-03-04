@@ -14,13 +14,15 @@ export default async function handler(req, res) {
 
     const HF_API_KEY = process.env.HF_API_KEY;
     if (!HF_API_KEY) {
-        console.error("ERREUR : HF_API_KEY manquante.");
-        return res.status(500).json({ error: "Configuration manquante (API KEY)" });
+        console.error("DEBUG VERCEL : HF_API_KEY est manquante dans les variables d'environnement.");
+        return res.status(500).json({ error: "Clé API non configurée sur Vercel (HF_API_KEY)" });
     }
 
     const HF_API_URL = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
 
     try {
+        console.log("DEBUG VERCEL : Envoi de la requête à Hugging Face...");
+
         const response = await fetch(HF_API_URL, {
             method: "POST",
             headers: {
@@ -30,14 +32,21 @@ export default async function handler(req, res) {
             body: JSON.stringify(req.body)
         });
 
-        if (response.status === 503) {
-            return res.status(503).json({ error: "Loading", message: "IA en préparation..." });
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("DEBUG VERCEL : Hugging Face a répondu avec une erreur :", response.status, data);
+            return res.status(response.status).json({
+                error: "Erreur Hugging Face",
+                status: response.status,
+                detail: data
+            });
         }
 
-        const data = await response.json();
-        return res.status(response.status).json(data);
+        console.log("DEBUG VERCEL : Réponse reçue avec succès de Hugging Face.");
+        return res.status(200).json(data);
     } catch (err) {
-        console.error("Erreur API Chat :", err.message);
-        return res.status(500).json({ error: "Erreur de connexion", detail: err.message });
+        console.error("DEBUG VERCEL : Erreur lors de l'exécution de la fonction :", err.message);
+        return res.status(500).json({ error: "Erreur interne du serveur", detail: err.message });
     }
 }
