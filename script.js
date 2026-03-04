@@ -883,10 +883,11 @@ function initOrderModal() {
             if (window.refreshOrderTracking) window.refreshOrderTracking();
 
             // Send Telegram Notification
+            const adminLink = window.location.origin + "/admin";
             const messageTelegram = `🍰 <b>NOUVELLE COMMANDE !</b>\n\n` +
               `💰 Total : ${numericTotal.toLocaleString('fr-FR')} FCFA\n` +
               `📝 Note : ${note || 'Aucune'}\n\n` +
-              `<a href="https://bf.delice-cake.workers.dev/admin">Accéder à l'espace Admin</a>`;
+              `<a href="${adminLink}">Accéder à l'espace Admin</a>`;
             await sendTelegramNotification(messageTelegram);
           }
         }
@@ -1160,10 +1161,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.refreshOrderTracking) window.refreshOrderTracking();
 
                 // 3. Send Telegram Notification
+                const adminLink = window.location.origin + "/admin";
                 const messageTelegram = `🤖 <b>COMMANDE VIA IA !</b>\n\n` +
                   `💰 Total : ${finalOrder.totalAmount.toLocaleString('fr-FR')} FCFA\n` +
                   `📝 Chat ID : ${chatId}\n\n` +
-                  `<a href="https://bf.delice-cake.workers.dev/admin">Accéder à l'espace Admin</a>`;
+                  `<a href="${adminLink}">Accéder à l'espace Admin</a>`;
                 await sendTelegramNotification(messageTelegram);
               }
             }
@@ -1375,8 +1377,10 @@ INFO : ${kbContent || "Pâtisseries artisanales au cœur de chocolat."}`;
       return botText;
     } catch (error) {
       console.error("DEBUG AI - Erreur critique :", error);
-      return "Une erreur de connexion est survenue. L'IA est peut-être en cours de maintenance.";
+      return `Erreur de connexion : ${error.message}. L'IA est peut-être mal configurée sur Vercel.`;
     }
   };
 
 });
+
+// Vercel Cache Busting Version: 04/03/2026 - AI Fix
